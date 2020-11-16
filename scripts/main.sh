@@ -1,4 +1,5 @@
-#/bin/sh
+#!/bin/bash
+# Made and owned by Federico Cassano
 # must be run as root/sudo
 # before using the script, enable raccomended and critical updates
 
