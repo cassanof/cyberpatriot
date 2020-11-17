@@ -4,7 +4,7 @@
 # in common.sh
   cat runningProcesses.log
 read -p "What is the name of the suspected netcat?[none]: " nc
-if [ $nc == "none"]
+if [ $nc == "none"];
 then
   echo "k xd"
 else
