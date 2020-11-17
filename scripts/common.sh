@@ -169,7 +169,11 @@ then
 	for x in `
       awk -F':' -v "min=${MINUID##UID_MIN}" -v "max=${MAXUID##UID_MAX}" '{ if ( $3 >= min && $3 <= max  && $7 != "/sbin/nologin" ) print $0 }' "$_p" \
         | cut -d: -f1 -
-    ` do crontab -u $x -l; done >> cron.log
+    ` 
+  do 
+    crontab -u $x -l >> cron.log
+  done 
+
 	echo "###CRON JOBS###" >> cron.log
 	ls /etc/cron.* >> cron.log
 	ls /var/spool/cron/crontabs/.* >> cron.log
