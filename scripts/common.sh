@@ -118,6 +118,7 @@ if [ $a = y ];
 then
   chmod 640 /etc/shadow
 	ls -l /etc/shadow
+  echo "!!! Shadow file secured!"
 fi
 
 read -p "Remove world readability permissions from /home/*? [y/n]: " a
@@ -125,6 +126,25 @@ if [ $a = y ];
 then
   chmod 0750 /home/*
 	ls -l /home/
+  echo "!!! Folder /home secured!"
+fi
+
+read -p "Check sudoers file? [y/n]: " a
+if [ $a = y ];
+then
+ 	cat /etc/sudoers | grep NOPASSWD.* >> /dev/null
+	if [ $? -eq 0 ]
+	then
+		echo "!!! NOPASSWD VALUE HAS BEEN FOUND IN THE SUDOERS FILE, GO CHANGE IT."
+	fi
+
+	# Looks for a timeout value
+	cat /etc/sudoers | grep timestamp_timeout >> /dev/null
+	if [ $? -eq 0 ]
+	then
+		TIME=`cat /etc/sudoers | grep timestamp_timeout | cut -f2 | cut -d= -f2`
+		echo "!!! Time out value has been set to $TIME Please go change it or remove it."
+	fi
 fi
 
 read -p "Log running processes? [y/n]: " a
@@ -138,4 +158,28 @@ then
 	sed -i '/dhclient/ d' runningProcesses.log
 	sed -i '/dnsmasq/ d' runningProcesses.log
 	sed -i '/cupsd/ d' runningProcesses.log
+  echo "!!! Logged running procceses, the log file can be found in the current folder."
 fi
+
+read -p "Log all cronjobs and crontabs? [y/n]: " a
+if [ $a = y ];
+then
+  #	Listing all the cronjobs
+	echo "###CRONTABS###" > cron.log
+	for x in `
+      awk -F':' -v "min=${MINUID##UID_MIN}" -v "max=${MAXUID##UID_MAX}" '{ if ( $3 >= min && $3 <= max  && $7 != "/sbin/nologin" ) print $0 }' "$_p" \
+        | cut -d: -f1 -
+    ` do crontab -u $x -l; done >> cron.log
+	echo "###CRON JOBS###" >> cron.log
+	ls /etc/cron.* >> cron.log
+	ls /var/spool/cron/crontabs/.* >> cron.log
+	ls /etc/crontab >> cron.log
+
+  #	Listing the init.d/init files
+	echo "###Init.d###" >> cron.log
+	ls /etc/init.d >> cron.log
+
+	echo "###Init###" >> cron.log
+	ls /etc/init >> cron.log
+fi
+

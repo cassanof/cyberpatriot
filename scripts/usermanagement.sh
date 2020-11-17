@@ -1,5 +1,6 @@
 #!/bin/bash
 # Made and owned by Federico Cassano
+# its suggested to use common.sh before this script
 
 _l="/etc/login.defs"
 _p="/etc/passwd"
@@ -75,3 +76,33 @@ then
 		fi
 	done
 fi
+
+read -p "Change all user passwords to Cyb3rPatr!0t$ ? [y/n]: " a
+if [ $a = y ];
+then
+	PASS='Cyb3rPatr!0t$'
+
+  for x in `
+      awk -F':' -v "min=${MINUID##UID_MIN}" -v "max=${MAXUID##UID_MAX}" '{ if ( $3 >= min && $3 <= max  && $7 != "/sbin/nologin" ) print $0 }' "$_p" \
+        | cut -d: -f1 -
+    `
+	do
+		echo -e "$PASS\n$PASS" | passwd $x
+		echo -e "!!! Password for $x has been changed to $PASS"
+		# Change the USER password policy
+		chage -M 90 -m 7 -W 15 $x
+	done
+fi
+
+read -p "Secure and lock root user? [y/n]: " a
+if [ $a = y ];
+then
+	PASS='Cyb3rPatr!0t$'
+
+
+	echo -e "$PASS\n$PASS" | passwd root
+  passwd -l root
+	chage -M 90 -m 7 -W 15 root
+  echo "!!! Root user locked and secured"
+fi
+
