@@ -7,6 +7,31 @@
 # 3. Enable daily updates
 
 
+read -p "Do a backup of critical files? *raccomended* [y/n]: " a
+if [ $a = y ];
+then
+	mkdir /BackUps
+	#Backups the sudoers file
+	sudo cp /etc/sudoers /Backups
+	#Backups the home directory
+	cp /etc/passwd /BackUps
+	#Backups the log files
+	cp -r /var/log /BackUps
+	#Backups the passwd file
+	cp /etc/passwd /BackUps
+	#Backups the group file
+	cp /etc/group /BackUps
+	#Back ups the shadow file
+	cp /etc/shadow /BackUps
+	#Backing up the /var/spool/mail
+	cp -r /var/spool/mail /BackUps
+	#backups all the home directories
+	for x in `ls /home`
+	do
+		cp -r /home/$x /BackUps
+	done
+fi
+
 read -p "Install updates and programs? (libx,make,vim,zsh) [y/n]: " a
 if [ $a = y ];
 then
@@ -22,6 +47,12 @@ then
   then
     killall firefox
     apt-get --purge --reinstall install firefox -y
+  fi
+
+  read -p "Update LibreOffice? [y/n]" a
+  if [ $a = y ];
+  then
+    apt-get --purge --reinstall install libreoffice -y
   fi
 fi
 
