@@ -6,6 +6,8 @@
 # 2. Enable raccomended and critical updates
 # 3. Enable daily updates
 
+CONF_DIR=./config
+OS=$(lsb_release --codename --short)
 
 read -p "Do a backup of critical files? *raccomended* [y/n]: " a
 if [ $a = y ];
@@ -25,12 +27,31 @@ then
 	cp /etc/shadow /Backups
 	#Backing up the /var/spool/mail
 	cp -r /var/spool/mail /Backups
+  #backups the apt sources
+  cp -r /etc/apt/ /Backups
 	#backups all the home directories
 	for x in `ls /home`
 	do
 		cp -r /home/$x /Backups
 	done
   echo "!!! Backup done! can be found at the folder /Backups"
+fi
+
+read -p "Fix broken apt sources? *only do if broken* [y/n]" a
+if [ $a = y ];
+then
+  	if [ "$OS" = "xenial" ]; then
+		cp -p /etc/apt/sources.list /etc/apt/sources.list.bak
+		cp "$CONF_DIR"/sources.list-"$OS" /etc/apt/sources.list
+	elif [ "$OS" = "trusty" ]; then
+		cp -p /etc/apt/sources.list /etc/apt/sources.list.bak
+		cp "$CONF_DIR"/sources.list-"$OS" /etc/apt/sources.list
+	elif [ "$OS" = "jessie" ]; then
+		cp -p /etc/apt/sources.list /etc/apt/sources.list.bak
+		cp "$CONF_DIR"/sources.list-"$OS" /etc/apt/sources.list
+	else
+		echo OS version not recognized. Script only works for Ubuntu 14.04, 16.04, and Debian 8.
+	fi
 fi
 
 read -p "Install updates and programs? (libx,make,vim,zsh) [y/n]: " a
@@ -100,8 +121,8 @@ then
 
   # set password policy
  	sed -i -e 's/PASS_MAX_DAYS\t[[:digit:]]\+/PASS_MAX_DAYS\t90/' /etc/login.defs
-	sed -i -e 's/PASS_MIN_DAYS\t[[:digit:]]\+/PASS_MIN_DAYS\t10/' /etc/login.defs
-	sed -i -e 's/PASS_WARN_AGE\t[[:digit:]]\+/PASS_WARN_AGE\t7/' /etc/login.defs
+	sed -i -e 's/PASS_MIN_DAYS\t[[:digit:]]\+/PASS_MIN_DAYS\7/' /etc/login.defs
+	sed -i -e 's/PASS_WARN_AGE\t[[:digit:]]\+/PASS_WARN_AGE\t14/' /etc/login.defs
 	sed -i -e 's/difok=3\+/difok=3 ucredit=-1 lcredit=-1 dcredit=-1 ocredit=-1/' /etc/pam.d/common-password
   echo "!!! Password policy set"
 
