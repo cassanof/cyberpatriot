@@ -6,7 +6,7 @@
 # 2. Enable raccomended and critical updates
 # 3. Enable daily updates
 
-CONF_DIR=./config
+CONF_DIR=./configs
 OS=$(lsb_release --codename --short)
 
 read -p "Do a backup of critical files? *raccomended* [y/n]: " a
