@@ -120,16 +120,30 @@ then
   echo "!!! Cracklib installed"
 
   # set password policy
- 	sed -i -e 's/PASS_MAX_DAYS\t[[:digit:]]\+/PASS_MAX_DAYS\t90/' /etc/login.defs
-	sed -i -e 's/PASS_MIN_DAYS\t[[:digit:]]\+/PASS_MIN_DAYS\7/' /etc/login.defs
-	sed -i -e 's/PASS_WARN_AGE\t[[:digit:]]\+/PASS_WARN_AGE\t14/' /etc/login.defs
-	sed -i -e 's/difok=3\+/difok=3 ucredit=-1 lcredit=-1 dcredit=-1 ocredit=-1/' /etc/pam.d/common-password
+  # sed -i -e 's/PASS_MAX_DAYS\t[[:digit:]]\+/PASS_MAX_DAYS\t90/' /etc/login.defs
+	# sed -i -e 's/PASS_MIN_DAYS\t[[:digit:]]\+/PASS_MIN_DAYS\7/' /etc/login.defs
+	# sed -i -e 's/PASS_WARN_AGE\t[[:digit:]]\+/PASS_WARN_AGE\t14/' /etc/login.defs
+  cp -p /etc/login.defs /etc/login.defs.bak
+	cp $CONF_DIR/login.defs /etc/login.defs
+
+	cp -p /etc/default/useradd /etc/default/useradd.bak
+	cp $CONF_DIR/useradd /etc/default/useradd
+
+	cp -p /etc/pam.d/common-password /etc/pam.d/defaults/common-password
+	cp $CONF_DIR/common-password /etc/pam.d/common-password
+
+	# sed -i -e 's/difok=3\+/difok=3 ucredit=-1 lcredit=-1 dcredit=-1 ocredit=-1/' /etc/pam.d/common-password
+	# sed -i 's/sha512\+/sha512 remember=13/' /etc/pam.d/common-password
+
   echo "!!! Password policy set"
 
   # set lockout policy
-  sed -i 's/auth\trequisite\t\t\tpam_deny.so\+/auth\trequired\t\t\tpam_deny.so/' /etc/pam.d/common-auth
-	sed -i '$a auth\trequired\t\t\tpam_tally2.so deny=5 unlock_time=1800 onerr=fail' /etc/pam.d/common-auth
-	sed -i 's/sha512\+/sha512 remember=13/' /etc/pam.d/common-password
+  # sed -i 's/auth\trequisite\t\t\tpam_deny.so\+/auth\trequired\t\t\tpam_deny.so/' /etc/pam.d/common-auth
+	# sed -i '$a auth\trequired\t\t\tpam_tally2.so deny=5 unlock_time=1800 onerr=fail' /etc/pam.d/common-auth
+
+	cp -p /etc/pam.d/common-auth /etc/pam.d/defaults/common-auth
+	cp $CONF_DIR/common-auth /etc/pam.d/common-auth
+
 
   echo "!!! Lockout policy set"
 fi
