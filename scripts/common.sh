@@ -62,7 +62,7 @@ then
   apt upgrade -y
   apt dist-upgrade -y
   # and try to install programs
-  apt install gcc make vim zsh libx11-dev libxinerama libxft -y
+  apt install gcc make vim zsh libx11-dev libxinerama-dev libxft-dev -y
   echo "!!! Installed updates and programs"
 
   read -p "Update firefox? *WILL KILL FIREFOX PROCESS!* [y/n]: " a
