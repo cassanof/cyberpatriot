@@ -8,7 +8,7 @@
 	
 	You may destroy the requisite information if you work on the checklist!
 
-1. Secure root
+1. Secure ssh root
 
 	set `PermitRootLogin no` in `/etc/ssh/sshd_config`
 

@@ -18,7 +18,7 @@ I would no longer recommend running `apt-get dist-upgrade` in competition. They 
 
 	1. Lock the root account
 
-		`$ passwd -l root`
+		`$ passwd -L root
 
 	1. Disable the guest account in `/etc/lightdm/lightdm.conf`
 
